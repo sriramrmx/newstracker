@@ -1,1 +1,37 @@
-
+apiVersion: vl
+kind: Service
+metadata:
+  name: dockerone
+spec:
+  selector: 
+    app: dockerone
+  ports:
+  - port: 88
+  targetPort: 88
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dockerone
+  Labels:
+    app: dockerone
+spec:
+  selector:
+    matchLabels:
+      app: dockerone
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: dockerone
+    spec:
+      containers:
+      - name: dockerone
+        image: us.icr.io/dockerone/rmx:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 88
+        env:
+        -name: DISABLE_WEB_APP
+        value: "false"
